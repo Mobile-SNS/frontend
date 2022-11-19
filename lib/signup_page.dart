@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'login_page.dart';
 
 void main() {
   runApp(const SignupPage());
@@ -6,27 +7,27 @@ void main() {
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key}) : super(key: key);
-
+  static const routeName = '/signup';
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      title: 'Signup Demo',
-      home: FormScreen(title: 'NASENKONGSTAGRAM'),
+      home: SignUpPage(title: 'NASENKONGSTAGRAM'),
       color: Colors.white,
     );
   }
 }
 
-class FormScreen extends StatefulWidget {
-  const FormScreen({Key? key, required this.title}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key, required this.title}) : super(key: key);
   final String title;
 
   @override
-  State<FormScreen> createState() => _FormScreenState();
+  State<SignUpPage> createState() => _SignUpState();
 }
 
-class _FormScreenState extends State<FormScreen> {
+
+class _SignUpState extends State<SignUpPage> {
   // Create a global key that uniquely identifies the Form widget and allows validation of the form.
   // Note: This is a GlobalKey<FormState>, not a GlobalKey<MyCustomFormState>.
   final _formKey = GlobalKey<FormState>();
@@ -167,22 +168,12 @@ class _FormScreenState extends State<FormScreen> {
                         return null;
                       },
                     ),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Validate returns true if the form is valid, or false otherwise.
-                        if (_formKey.currentState!.validate()) {
-                          // validation 이 성공하면 폼 저장하기
-                          _formKey.currentState!.save();
-
-                          // If the form is valid, display a SnackBar. In the real world,
-                          // you'd often call a server or save the information in a database.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(_name+ '/'+ _email + '/' + _password)),
-                          );
-                        }
-                      },
-                      child: const Text('가입'),
-                    ),
+                            ElevatedButton(
+                              child: const Text('가입'),
+                              onPressed: () {
+                                Navigator.pushNamed(context, '/login');
+                              },
+                            ),
                   ],
                 )),
           ],
