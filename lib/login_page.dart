@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
-import 'main.dart';
+import 'tab_page.dart';
 
 void main() {
   runApp(const LogInPage());
@@ -106,11 +106,12 @@ class _LogInPageState extends State<LogInPage> {
                     // SizedBox( height: 16, ),
 
                     ElevatedButton(
+                      child: const Text('로그인'),
                       onPressed: () {
-                        // Validate returns true if the form is valid, or false otherwise.
                         if (_formKey.currentState!.validate()) {
                           // validation 이 성공하면 폼 저장하기
                           _formKey.currentState!.save();
+                          Navigator.pushNamed(context, '/tab');
 
                           // If the form is valid, display a SnackBar. In the real world,
                           // you'd often call a server or save the information in a database.
@@ -118,9 +119,10 @@ class _LogInPageState extends State<LogInPage> {
                             SnackBar(content: Text(_email + '/' + _password)),
                           );
                         }
+                        Navigator.pushNamed(context, '/tab');
                       },
-                      child: const Text('로그인'),
-                    ), const Text('계정이 없으신가요 ?'),
+                    ),
+                    const Text('계정이 없으신가요 ?'),
                     ElevatedButton(
                       child: const Text('Sign up'),
                       onPressed: () {
