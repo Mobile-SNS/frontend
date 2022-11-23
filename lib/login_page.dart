@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'signup_page.dart';
 import 'main.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_fonts/google_fonts.dart';
+
 
 void main() {
   runApp(const LogInPage());
@@ -8,130 +11,135 @@ void main() {
 
 class LogInPage extends StatefulWidget {
   const LogInPage({Key? key}) : super(key: key);
-  // This widget is the root of your application.
-  static const routeName = '/login';
+  //static const routeName = '/login';
 
   @override
   State<LogInPage> createState() => _LogInPageState();
 }
 
 class _LogInPageState extends State<LogInPage> {
-  // Create a global key that uniquely identifies the Form widget and allows validation of the form.
-  // Note: This is a GlobalKey<FormState>, not a GlobalKey<MyCustomFormState>.
-  final _formKey = GlobalKey<FormState>();
 
+  final _emailController = TextEditingController();
+  final _passwordController = TextEditingController();
 
+  Future signIn() async{
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text.trim()
+    );
+  }
 
-  String _email = '';
-  String _password = '';
+  @override
+  void dispose(){
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
-      body: Form(
-        key: _formKey,
+      backgroundColor: Colors.white,
+      body: SafeArea(
+      child:Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          //crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Icon(
+              Icons.android,
+              size:100,
+            ),
+            SizedBox(height:75),
+            Text(
+              'NASENKONGStagram',
+              style:GoogleFonts.bebasNeue(
+                fontSize:52,
+              ),
+            ),
+            SizedBox(height:10),
+            Text(
+              '로그인 하세요?',
+              style: TextStyle(
+                fontSize:18,
+              ),
+            ),
+            SizedBox(height:50),
+
+            // email textfield
             Padding(
-                padding: const EdgeInsets.all(20),
-                child: Column(
-                  children: [
-
-                    TextFormField(
-                      autovalidateMode: AutovalidateMode.always,
-                      decoration: const InputDecoration(
-                        icon: Icon(Icons.email),
-                        labelText: 'Email',
-                        hintText: 'eg)hansung@xx.com',
-                        border: OutlineInputBorder(),
-                      ),
-                      onSaved: (value) {
-                        setState(() {
-                          _email = value as String;
-                        });
-                      },
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter some text';
-                        }
-                        return null;
-                      },
+                padding: const EdgeInsets.symmetric(horizontal:25.0),
+                child: TextField(
+                  controller: _emailController,
+                  decoration:InputDecoration(
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color:Colors.white),
+                      borderRadius:BorderRadius.circular(12),
                     ),
-                  ],
-                )),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide:BorderSide(color:Colors.deepPurple),
+                      borderRadius:BorderRadius.circular(12),
+                    ),
+                    hintText: 'Email',
+                    fillColor:Colors.grey[200],
+                    filled: true,
+                  ),
+                ),
+            ),
+            SizedBox(height:10),
+
+           //password textfield
             Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
-                child: Column(
-                  children: [
-                    TextFormField(
-                        autovalidateMode: AutovalidateMode.always,
-                        decoration: const InputDecoration(
-                          icon: Icon(Icons.vpn_key),
-                          labelText: 'Password',
-                          hintText: 'eg) very hard key',
-                          border: OutlineInputBorder(),
-                        ),
-                        obscureText: true,// 보안
-                        onSaved: (value) {
-                          setState(() {
-                            _password = value as String;
-                          });
-                        },
-                        validator: (value) {
-                          if (value == null || value.isEmpty) {
-                            return 'Please enter some text';
-                          }
-                          if (value.toString().length < 8) {
-                            return '8자 이상 입력';
-                          }
-                          if (!RegExp('[0-9]').hasMatch(value)) {
-                            return '정규식';
-                          }
-                          return null;
-                        }
-                      // inputFormatters: [FilteringTextInputFormatter(RegExp('[0-9]'), allow:false), ],
-                      // focusNode: _passwordFocusNode,
-                      // keyboardType: TextInputType.text ,
-                      // obscureText: true,
-                      // decoration: InputDecoration(
-                      //   labelText: "비밀번호",
-                      //   suffixIcon: Icon(Icons.lock),
-                      // ),
-                      // textInputAction: TextInputAction.done,
-                    ),
-
-                    // SizedBox( height: 16, ),
-
-                    ElevatedButton(
-                      onPressed: () {
-                        // Validate returns true if the form is valid, or false otherwise.
-                        if (_formKey.currentState!.validate()) {
-                          // validation 이 성공하면 폼 저장하기
-                          _formKey.currentState!.save();
-
-                          // If the form is valid, display a SnackBar. In the real world,
-                          // you'd often call a server or save the information in a database.
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(_email + '/' + _password)),
-                          );
-                        }
-                      },
-                      child: const Text('로그인'),
-                    ), const Text('계정이 없으신가요 ?'),
-                    ElevatedButton(
-                      child: const Text('Sign up'),
-                      onPressed: () {
-                        Navigator.pushNamed(context, '/signup');
-                      },
-                    ),
-                  ],
-                )),
-          ],
+                padding: const EdgeInsets.symmetric(horizontal:25.0),
+    child: TextField(
+            controller: _passwordController,
+            decoration:InputDecoration(
+              enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(color:Colors.white),
+                borderRadius:BorderRadius.circular(12),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide:BorderSide(color:Colors.deepPurple),
+                borderRadius:BorderRadius.circular(12),
+              ),
+              hintText: 'Password',
+              fillColor:Colors.grey[200],
+              filled: true,
+            ),
+          ),
         ),
-      ),
+        SizedBox(height:10),
+
+        Padding(
+    padding: const EdgeInsets.symmetric(horizontal:25.0),
+                        child:GestureDetector(
+                          onTap:signIn,
+                          child: Container(
+                            padding:EdgeInsets.all(20),
+                            decoration: BoxDecoration(
+                              color:Colors.deepPurple,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child:Center(
+                              child:Text(
+                                '로그인',
+                                style:TextStyle(
+                                  color:Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize:18,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                    ),
+
+                    SizedBox(height:25),
+        ],
+
+        ),
+    ),
+    ),
     );
   }
 }
