@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
-import '../signup_page.dart';
 import '../main.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-
-// void main() {
-//   runApp(const LogInPage());
-// }
 
 class LogInPage extends StatefulWidget {
   final VoidCallback showRegisterPage;
