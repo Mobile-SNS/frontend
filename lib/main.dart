@@ -3,7 +3,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:mobile_sns/main_page.dart';
 
 import 'signup_page.dart';
-import 'login_page.dart';
+import 'auth/login_page.dart';
 
 
 void main() async {
