@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegisterPage extends StatefulWidget {
   final VoidCallback showLogInPage;
@@ -15,23 +16,47 @@ class _RegisterPageState extends State<RegisterPage> {
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _confirmpasswordController = TextEditingController();
+  final _nameController = TextEditingController();
+  final _birthController = TextEditingController();
+  final _phoneNumController = TextEditingController();
+
 
   @override
   void dispose(){
     _emailController.dispose();
     _passwordController.dispose();
     _confirmpasswordController.dispose();
+    _nameController.dispose();
+    _birthController.dispose();
+    _phoneNumController.dispose();
     super.dispose();
   }
 
   Future signUp() async{
+    // 사용자 생성
     if(passwordConfirmed()){
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim()
       );
+      // 사용자 정보 추가 (이름,생년월일,전화번호)
+      addUserDetails(
+          _nameController.text.trim(),
+          _birthController.text.trim(),
+          _phoneNumController.text.trim(),
+          _emailController.text.trim()
+      );
     }
   }
+
+  Future addUserDetails(String name, String birth, String phoneNum, String email) async {
+    await FirebaseFirestore.instance.collection('users').add({
+      '이름 ':name,
+      '생년월일 ':birth,
+      '휴대폰 번호':phoneNum,
+      '이메일 주소':email,
+    });
+}
 
   bool passwordConfirmed(){
     if(_passwordController.text.trim()== _confirmpasswordController.text.trim()){
@@ -41,8 +66,6 @@ class _RegisterPageState extends State<RegisterPage> {
       return false;
     }
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +78,6 @@ class _RegisterPageState extends State<RegisterPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               //crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(
-                  Icons.android,
-                  size:100,
-                ),
                 SizedBox(height:75),
                 Text(
                   'NASENKONGStagram',
@@ -75,6 +94,73 @@ class _RegisterPageState extends State<RegisterPage> {
                 ),
                 SizedBox(height:50),
 
+                // 이름 입력란
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal:25.0),
+                  child: TextField(
+                    controller: _nameController,
+                    decoration:InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color:Colors.white),
+                        borderRadius:BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:BorderSide(color:Colors.deepPurple),
+                        borderRadius:BorderRadius.circular(12),
+                      ),
+                      hintText: '이름',
+                      fillColor:Colors.grey[200],
+                      filled: true,
+                    ),
+                  ),
+                ),
+                SizedBox(height:10),
+
+                // 생년월일 입력란
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal:25.0),
+                  child: TextField(
+                    controller: _birthController,
+                    decoration:InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color:Colors.white),
+                        borderRadius:BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:BorderSide(color:Colors.deepPurple),
+                        borderRadius:BorderRadius.circular(12),
+                      ),
+                      hintText: '생년월일',
+                      fillColor:Colors.grey[200],
+                      filled: true,
+                    ),
+                  ),
+                ),
+                SizedBox(height:10),
+
+                // 휴대폰 번호 입력란
+               Padding(
+                  padding: const EdgeInsets.symmetric(horizontal:25.0),
+                  child: TextField(
+                    controller: _phoneNumController,
+                    decoration:InputDecoration(
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color:Colors.white),
+                        borderRadius:BorderRadius.circular(12),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide:BorderSide(color:Colors.deepPurple),
+                        borderRadius:BorderRadius.circular(12),
+                      ),
+                      hintText: '휴대폰 번호',
+                      fillColor:Colors.grey[200],
+                      filled: true,
+                    ),
+                  ),
+                ),
+                SizedBox(height:10),
+
+
                 // 이메일 입력란
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal:25.0),
@@ -89,7 +175,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderSide:BorderSide(color:Colors.deepPurple),
                         borderRadius:BorderRadius.circular(12),
                       ),
-                      hintText: 'Email',
+                      hintText: '이메일',
                       fillColor:Colors.grey[200],
                       filled: true,
                     ),
@@ -112,7 +198,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderSide:BorderSide(color:Colors.deepPurple),
                         borderRadius:BorderRadius.circular(12),
                       ),
-                      hintText: 'Password',
+                      hintText: '비밀번호',
                       fillColor:Colors.grey[200],
                       filled: true,
                     ),
@@ -135,7 +221,7 @@ class _RegisterPageState extends State<RegisterPage> {
                         borderSide:BorderSide(color:Colors.deepPurple),
                         borderRadius:BorderRadius.circular(12),
                       ),
-                      hintText: 'Confrim Password',
+                      hintText: '비밀번호 확인',
                       fillColor:Colors.grey[200],
                       filled: true,
                     ),
